@@ -4,20 +4,23 @@
 
 package com.mycompany.st10439619poepartone;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
- * @author Makgotso Mokgoko
+ * @author Otshepeng Mokgoko
  */
 public class St10439619POEPARTONE {
+    private static List<User> userList = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Registration System");
-        registerUser();
+         registerUser();
+        loginUser();
     }
 
     private static void registerUser() {
         Scanner scanner = new Scanner(System.in);
-
         System.out.println("Enter username:");
         String username = scanner.nextLine();
         String usernameMessage = validateUsername(username);
@@ -37,11 +40,29 @@ public class St10439619POEPARTONE {
             String lastName = scanner.nextLine();
 
             User user = new User(username, password, firstName, lastName);
-            // Here you can save the user object to a database or a collection
+            // Add the user object to the list
+            userList.add(user);
+            // Save the user object to a list
             System.out.println("User registered successfully!");
         }
     }
 
+    private static void loginUser() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter password:");
+        String password = scanner.nextLine();
+
+        for (User user : userList) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                System.out.println("Welcome " + user.getFirstName() + ", " + user.getLastName() + "! It is great to see you again.");
+                return;
+            }
+        }
+        System.out.println("Username or password incorrect, please try again.");
+    }
+    
     private static String validateUsername(String username) {
         // Check if the username is no more than 5 characters and contains an underscore
         if (username.length() <= 5 && username.contains("_")) {
@@ -98,5 +119,20 @@ class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 }
