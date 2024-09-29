@@ -12,99 +12,62 @@ import java.util.List;
  */
 public class St10439619POEPARTONE {
     private static List<User> userList = new ArrayList<>();
+    private static Login loginService = new Login();
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Registration System");
-         registerUser();
-        loginUser();
-    }
+        while (true) {
+        System.out.println("Please choose an option:");
+        System.out.println("1. Register");
+        System.out.println("2. Login");
+        System.out.println("3. Exit");
 
-    private static void registerUser() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter username:");
-        String username = scanner.nextLine();
-        String usernameMessage = validateUsername(username);
-        System.out.println(usernameMessage);
+        int choice = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.println("Enter password:");
-        String password = scanner.nextLine();
-        String passwordMessage = validatePassword(password);
-        System.out.println(passwordMessage);
-
-        if (usernameMessage.startsWith("Username successfully captured") &&
-            passwordMessage.startsWith("Password successfully captured")) {
-            System.out.println("Please enter your first name:");
-            String firstName = scanner.nextLine();
-
-            System.out.println("Please enter your last name:");
-            String lastName = scanner.nextLine();
-
-            User user = new User(username, password, firstName, lastName);
-            // Add the user object to the list
-            userList.add(user);
-            // Save the user object to a list
-            System.out.println("User registered successfully!");
-        }
-    }
-
-    private static void loginUser() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter username:");
-        String username = scanner.nextLine();
-        System.out.println("Enter password:");
-        String password = scanner.nextLine();
-
-        for (User user : userList) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                System.out.println("Welcome " + user.getFirstName() + ", " + user.getLastName() + "! It is great to see you again.");
+        switch (choice) {
+            case 1:
+         registerUser(scanner);
+         break;
+            case 2:
+        loginUser(scanner);
+        break;
+            case 3:
+                System.out.println("Exiting the system. Goodbye!");
+                // Exit the program
                 return;
-            }
+            default:
+                System.out.println("Invalid option. Please try again.");
         }
-        System.out.println("Username or password incorrect, please try again.");
     }
-    
-    private static String validateUsername(String username) {
-        // Check if the username is no more than 5 characters and contains an underscore
-        if (username.length() <= 5 && username.contains("_")) {
-            return "Username successfully captured.";
-        }
-        return "Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.";
+}
+
+    private static void registerUser(Scanner scanner) {
+        System.out.println("Enter username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter password:");
+        String password = scanner.nextLine();
+        System.out.println("Enter first name:");
+        String firstName = scanner.nextLine();
+        System.out.println("Enter last name:");
+        String lastName = scanner.nextLine();
+
+        String registrationMessage = loginService.registerUser(username, password, userList);
+        System.out.println(registrationMessage);
     }
 
-    private static String validatePassword(String password) {
-        // Check the password length, presence of uppercase letter, digit, and special character
-        if (password.length() >= 8 && containsUppercase(password) && containsDigit(password) && containsSpecialCharacter(password)) {
-            return "Password successfully captured.";
-        }
-        return "Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character.";
-    }
+    private static void loginUser(Scanner scanner) {
+        System.out.println("Enter username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter password:");
+        String password = scanner.nextLine();
 
-    private static boolean containsUppercase(String str) {
-        for (char c : str.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                return true;
-            }
+        if (loginService.loginUser(username, password, userList)) {
+            System.out.println(loginService.returnLoginStatus(true));
+        } else {
+            System.out.println(loginService.returnLoginStatus(false));
         }
-        return false;
-    }
-
-    private static boolean containsDigit(String str) {
-        for (char c : str.toCharArray()) {
-            if (Character.isDigit(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
-// Define special characters
-    private static boolean containsSpecialCharacter(String str) {
-        String specialChars = "!@#$%^&+=()"; 
-        for (char c : str.toCharArray()) {
-            if (specialChars.indexOf(c) >= 0) {
-                return true;
-            }
-        }
-        return false;
     }
 }
 
@@ -120,6 +83,7 @@ class User {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
     public String getUsername() {
         return username;
     }
@@ -134,5 +98,78 @@ class User {
 
     public String getLastName() {
         return lastName;
+    }
+}
+
+class Login {
+    public boolean checkUserName(String username) {
+        return username.length() <= 5 && username.contains("_");
+    }
+
+    public boolean checkPasswordComplexity(String password) {
+        return password.length() >= 8 && 
+               containsUppercase(password) && 
+               containsDigit(password) && 
+               containsSpecialCharacter(password);
+    }
+
+    public String registerUser(String username, String password, List<User> userList) {
+        if (!checkUserName(username)) {
+            return "Username is incorrectly formatted. It must contain an underscore and be no more than 5 characters.";
+        }
+        if (!checkPasswordComplexity(password)) {
+            return "Password does not meet complexity requirements. Ensure it has at least 8 characters, a capital letter, a number, and a special character.";
+        }
+
+        //Create a placeholder User
+        User newUser = new User(username, password, "FirstName", "LastName");
+        // Add user to the userList
+        userList.add(newUser); 
+        return "User registered successfully!";
+    }
+
+    public boolean loginUser(String username, String password, List<User> userList) {
+        for (User user : userList) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String returnLoginStatus(boolean isLoggedIn) {
+        if (isLoggedIn) {
+            return "Welcome back! It is great to see you again.";
+        } else {
+            return "Username or password incorrect, please try again.";
+        }
+    }
+
+    private boolean containsUppercase(String str) {
+        for (char c : str.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsDigit(String str) {
+        for (char c : str.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+// Define the special characters
+    private boolean containsSpecialCharacter(String str) {
+        String specialChars = "!@#$%^&+=()"; 
+        for (char c : str.toCharArray()) {
+            if (specialChars.indexOf(c) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
