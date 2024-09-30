@@ -6,10 +6,9 @@ package com.mycompany.st10439619poepartone;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-/**
- *
- * @author Otshepeng Mokgoko
- */
+
+
+
 public class St10439619POEPARTONE {
     private static List<User> userList = new ArrayList<>();
     private static Login loginService = new Login();
@@ -18,10 +17,9 @@ public class St10439619POEPARTONE {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Registration System");
         while (true) {
-        System.out.println("Please choose an option:");
+        System.out.println("Please select one of the following options:");
         System.out.println("1. Register");
         System.out.println("2. Login");
-        System.out.println("3. Exit");
 
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -33,10 +31,6 @@ public class St10439619POEPARTONE {
             case 2:
         loginUser(scanner);
         break;
-            case 3:
-                System.out.println("Exiting the system. Goodbye!");
-                // Exit the program
-                return;
             default:
                 System.out.println("Invalid option. Please try again.");
         }
@@ -123,7 +117,7 @@ class Login {
 
         //Create a placeholder User
         User newUser = new User(username, password, "FirstName", "LastName");
-        // Add user to the userList
+        // Add a user to the userList
         userList.add(newUser); 
         return "User registered successfully!";
     }
@@ -139,7 +133,7 @@ class Login {
 
     public String returnLoginStatus(boolean isLoggedIn) {
         if (isLoggedIn) {
-            return "Welcome back! It is great to see you again.";
+            return "Welcome! It is great to see you .";
         } else {
             return "Username or password incorrect, please try again.";
         }
