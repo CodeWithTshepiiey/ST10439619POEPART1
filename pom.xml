@@ -30,4 +30,5 @@
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>com.mycompany.st10439619poepartone.St10439619POEPARTONE</exec.mainClass>
     </properties>
+    <name>St10439619POEPARTTWO</name>
 </project>

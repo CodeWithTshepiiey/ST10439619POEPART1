@@ -11,11 +11,14 @@ import java.util.List;
 
 public class St10439619POEPARTONE {
     private static List<User> userList = new ArrayList<>();
+    private static List<Task> taskList = new ArrayList<>();
     private static Login loginService = new Login();
+    private static boolean isLoggedIn = false;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Registration System");
+        
         while (true) {
         System.out.println("Please select one of the following options:");
         System.out.println("1. Register");
@@ -34,6 +37,9 @@ public class St10439619POEPARTONE {
             default:
                 System.out.println("Invalid option. Please try again.");
         }
+        if (isLoggedIn) {
+                showEasyKanbanMenu(scanner);
+            }
     }
 }
 
@@ -59,9 +65,76 @@ public class St10439619POEPARTONE {
 
         if (loginService.loginUser(username, password, userList)) {
             System.out.println(loginService.returnLoginStatus(true));
+            isLoggedIn = true;
         } else {
             System.out.println(loginService.returnLoginStatus(false));
         }
+    }
+    private static void showEasyKanbanMenu(Scanner scanner) {
+        System.out.println("Welcome to EasyKanban");
+        
+        while (true) {
+            System.out.println("Please select an option:");
+            System.out.println("1. Add tasks");
+            System.out.println("2. Show report");
+            System.out.println("3. Quit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    addTasks(scanner);
+                    break;
+                case 2:
+                    System.out.println("Coming Soon");
+                    break;
+                case 3:
+                    System.out.println("Goodbye!");
+                    System.exit(0); // Exit the program
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    // Method to add tasks
+    private static void addTasks(Scanner scanner) {
+        System.out.println("How many tasks would you like to enter?");
+        int numberOfTasks = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        for (int i = 0; i < numberOfTasks; i++) {
+            System.out.println("Enter task name:");
+            String taskName = scanner.nextLine();
+
+            System.out.println("Enter task description:");
+            String taskDescription = scanner.nextLine();
+
+            Task task = new Task(taskName, taskDescription);
+            taskList.add(task);
+            System.out.println("Task added successfully!");
+        }
+    }
+}
+
+// Task class to store task details
+class Task {
+    private String taskName;
+    private String taskDescription;
+
+    public Task(String taskName, String taskDescription) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
     }
 }
 
@@ -152,6 +225,7 @@ class Login {
         for (char c : str.toCharArray()) {
             if (Character.isDigit(c)) {
                 return true;
+                
             }
         }
         return false;
