@@ -80,18 +80,18 @@ public class St10439619POEPARTONE {
             System.out.println("3. Quit");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
                     addTasks(scanner);
                     break;
                 case 2:
-                    System.out.println("Coming Soon");
+                    System.out.println("");
                     break;
                 case 3:
                     System.out.println("Goodbye!");
-                    System.exit(0); // Exit the program
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -103,7 +103,7 @@ public class St10439619POEPARTONE {
     private static void addTasks(Scanner scanner) {
         System.out.println("How many tasks would you like to enter?");
         int numberOfTasks = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
         for (int i = 0; i < numberOfTasks; i++) {
             System.out.println("Enter task name:");
