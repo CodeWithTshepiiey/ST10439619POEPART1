@@ -3,45 +3,48 @@
  */
 
 package com.mycompany.st10439619poepartone;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 public class St10439619POEPARTONE {
     private static List<User> userList = new ArrayList<>();
     private static List<Task> taskList = new ArrayList<>();
     private static Login loginService = new Login();
-    private static boolean isLoggedIn = false;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Registration System");
-        
+
+        // Create dialog for JOptionPane
+        final JDialog dialog = new JDialog();
+        dialog.setAlwaysOnTop(true);  // Ensure JOptionPane appears on top
+
         while (true) {
-        System.out.println("Please select one of the following options:");
-        System.out.println("1. Register");
-        System.out.println("2. Login");
+            System.out.println("Please select one of the following options:");
+            System.out.println("1. Register");
+            System.out.println("2. Login");
 
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (choice) {
-            case 1:
-         registerUser(scanner);
-         break;
-            case 2:
-        loginUser(scanner);
-        break;
-            default:
-                System.out.println("Invalid option. Please try again.");
-        }
-        if (isLoggedIn) {
-                showEasyKanbanMenu(scanner);
+            switch (choice) {
+                case 1:
+                    registerUser(scanner);
+                    break;
+                case 2:
+                    if (loginUser(scanner)) {
+                        showMainMenu(scanner, dialog);
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
             }
+        }
     }
-}
 
     private static void registerUser(Scanner scanner) {
         System.out.println("Enter username:");
@@ -57,84 +60,122 @@ public class St10439619POEPARTONE {
         System.out.println(registrationMessage);
     }
 
-    private static void loginUser(Scanner scanner) {
+    private static boolean loginUser(Scanner scanner) {
         System.out.println("Enter username:");
         String username = scanner.nextLine();
         System.out.println("Enter password:");
         String password = scanner.nextLine();
 
         if (loginService.loginUser(username, password, userList)) {
-            System.out.println(loginService.returnLoginStatus(true));
-            isLoggedIn = true;
+            // Display welcome message using JOptionPane
+            JOptionPane.showMessageDialog(null, loginService.returnLoginStatus(true));
+            JOptionPane.showMessageDialog(null, "Welcome to EasyKanban");
+            return true;
         } else {
             System.out.println(loginService.returnLoginStatus(false));
+            return false;
         }
     }
-    private static void showEasyKanbanMenu(Scanner scanner) {
-        System.out.println("Welcome to EasyKanban");
-        
-        while (true) {
-            System.out.println("Please select an option:");
-            System.out.println("1. Add tasks");
-            System.out.println("2. Show report");
-            System.out.println("3. Quit");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+    private static void showMainMenu(Scanner scanner, JDialog dialog) {
+        boolean quit = false;
 
-            switch (choice) {
+        while (!quit) {
+            // Show the main menu using JOptionPane
+            String menuMessage = "Please select an option:\n" +
+                                 "1. Add tasks\n" +
+                                 "2. Show report\n" +
+                                 "3. Quit";
+            String optionString = JOptionPane.showInputDialog(dialog, menuMessage);
+
+            if (optionString == null) { // Handle cancel option
+                System.out.println("Exiting EasyKanban. Goodbye!");
+                System.exit(0);
+            }
+
+            int option = Integer.parseInt(optionString);
+
+            switch (option) {
                 case 1:
-                    addTasks(scanner);
+                    addTasks(scanner, dialog);
                     break;
                 case 2:
-                    System.out.println("");
+                    showReport(dialog);
                     break;
                 case 3:
-                    System.out.println("Goodbye!");
-                    System.exit(0);
+                    quit = true;
+                    System.out.println("Exiting EasyKanban. Goodbye!");
                     break;
                 default:
-                    System.out.println("Invalid option. Please try again.");
+                    JOptionPane.showMessageDialog(dialog, "Invalid option. Please try again.");
             }
         }
     }
 
-    // Method to add tasks
-    private static void addTasks(Scanner scanner) {
-        System.out.println("How many tasks would you like to enter?");
-        int numberOfTasks = scanner.nextInt();
-        scanner.nextLine();
+    private static void addTasks(Scanner scanner, JDialog dialog) {
+        String taskCountString = JOptionPane.showInputDialog(dialog, "How many tasks would you like to add?");
+        
+        if (taskCountString == null) { // Handle cancel option
+            return; // Exit the task addition if canceled
+        }
 
-        for (int i = 0; i < numberOfTasks; i++) {
-            System.out.println("Enter task name:");
-            String taskName = scanner.nextLine();
+        int taskCount = Integer.parseInt(taskCountString);
 
-            System.out.println("Enter task description:");
-            String taskDescription = scanner.nextLine();
+        for (int i = 0; i < taskCount; i++) {
+            // Input Task Details using JOptionPane
+            String taskName = JOptionPane.showInputDialog(dialog, "Enter Task Name:");
+            String taskDescription;
 
-            Task task = new Task(taskName, taskDescription);
+            while (true) {
+                taskDescription = JOptionPane.showInputDialog(dialog, "Task Description (max 50 characters):");
+                if (taskDescription != null && taskDescription.length() <= 50) {
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Please enter a task description of less than 50 characters.");
+                }
+            }
+
+            String devFirstName = JOptionPane.showInputDialog(dialog, "Assigned Developer's First Name:");
+            String devLastName = JOptionPane.showInputDialog(dialog, "Assigned Developer's Last Name:");
+
+            String taskDurationString = JOptionPane.showInputDialog(dialog, "Estimated Task Duration (in hours):");
+            int taskDuration = Integer.parseInt(taskDurationString);
+
+            // Select Task Status
+            String statusMessage = "Select Task Status:\n1. To Do\n2. Doing\n3. Done";
+            String statusChoiceString = JOptionPane.showInputDialog(dialog, statusMessage);
+            int statusChoice = Integer.parseInt(statusChoiceString);
+            String taskStatus;
+            switch (statusChoice) {
+                case 1:
+                    taskStatus = "To Do";
+                    break;
+                case 2:
+                    taskStatus = "Doing";
+                    break;
+                case 3:
+                    taskStatus = "Done";
+                    break;
+                default:
+                    taskStatus = "Unknown";
+            }
+
+            // Create and store the task
+            Task task = new Task(taskName, i, taskDescription, devFirstName + " " + devLastName, taskDuration, taskStatus);
             taskList.add(task);
-            System.out.println("Task added successfully!");
+
+            // Display task information using JOptionPane with dialog owner
+            JOptionPane.showMessageDialog(dialog, task.printTaskDetails());
         }
     }
-}
 
-// Task class to store task details
-class Task {
-    private String taskName;
-    private String taskDescription;
-
-    public Task(String taskName, String taskDescription) {
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public String getTaskDescription() {
-        return taskDescription;
+    private static void showReport(JDialog dialog) {
+        // Example report to show all tasks
+        StringBuilder report = new StringBuilder("Current Tasks:\n");
+        for (Task task : taskList) {
+            report.append(task.printTaskDetails()).append("\n\n");
+        }
+        JOptionPane.showMessageDialog(dialog, report.toString());
     }
 }
 
@@ -158,14 +199,6 @@ class User {
     public String getPassword() {
         return password;
     }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
 }
 
 class Login {
@@ -188,9 +221,7 @@ class Login {
             return "Password does not meet complexity requirements. Ensure it has at least 8 characters, a capital letter, a number, and a special character.";
         }
 
-        //Create a placeholder User
         User newUser = new User(username, password, "FirstName", "LastName");
-        // Add a user to the userList
         userList.add(newUser); 
         return "User registered successfully!";
     }
@@ -205,39 +236,93 @@ class Login {
     }
 
     public String returnLoginStatus(boolean isLoggedIn) {
-        if (isLoggedIn) {
-            return "Welcome! It is great to see you .";
-        } else {
-            return "Username or password incorrect, please try again.";
-        }
+        return isLoggedIn ? "Welcome! It is great to see you." : "Username or password incorrect, please try again.";
     }
 
     private boolean containsUppercase(String str) {
         for (char c : str.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                return true;
-            }
+            if (Character.isUpperCase(c)) return true;
         }
         return false;
     }
 
     private boolean containsDigit(String str) {
         for (char c : str.toCharArray()) {
-            if (Character.isDigit(c)) {
-                return true;
-                
-            }
+            if (Character.isDigit(c)) return true;
         }
         return false;
     }
-// Define the special characters
+
     private boolean containsSpecialCharacter(String str) {
-        String specialChars = "!@#$%^&+=()"; 
+        String specialChars = "!@#$%^&+=()";
         for (char c : str.toCharArray()) {
-            if (specialChars.indexOf(c) >= 0) {
-                return true;
-            }
+            if (specialChars.indexOf(c) >= 0) return true;
         }
         return false;
+    }
+}
+
+class Task {
+    private String taskName;
+    private int taskNumber;
+    private String taskDescription;
+    private String developerDetails;
+    private int taskDuration;
+    private String taskID;
+    private String taskStatus;
+
+    // Constructor
+    public Task(String taskName, int taskNumber, String taskDescription, String developerDetails, int taskDuration, String taskStatus) {
+        this.taskName = taskName;
+        this.taskNumber = taskNumber;
+        // Directly validate and set taskDescription
+        setTaskDescription(taskDescription);
+        this.developerDetails = developerDetails;
+        this.taskDuration = taskDuration;
+        this.taskID = createTaskID();
+        this.taskStatus = taskStatus;
+    }
+
+    // Check task description
+    public boolean checkTaskDescription() {
+        return taskDescription != null && taskDescription.length() <= 50;
+    }
+
+    // Create task ID
+    public String createTaskID() {
+        return taskName.substring(0, 2).toUpperCase() + ":" + taskNumber + ":" +
+               developerDetails.substring(developerDetails.length() - 3).toUpperCase();
+    }
+
+    // Print task details
+    public String printTaskDetails() {
+        return "Task Status: " + taskStatus + "\n" +
+               "Developer Details: " + developerDetails + "\n" +
+               "Task Number: " + taskNumber + "\n" +
+               "Task Name: " + taskName + "\n" +
+               "Task Description: " + taskDescription + "\n" +
+               "Task ID: " + taskID + "\n" +
+               "Duration: " + taskDuration + " hours";
+    }
+
+    // Return total hours
+    public static int returnTotalHours(List<Task> tasks) {
+        int totalHours = 0;
+        for (Task task : tasks) {
+            totalHours += task.taskDuration;
+        }
+        return totalHours;
+    }
+
+    // Setter for taskDescription with validation
+    public void setTaskDescription(String taskDescription) {
+        if (taskDescription == null) {
+            throw new IllegalArgumentException("Task description cannot be null.");
+        }
+        if (taskDescription.length() <= 50) {
+            this.taskDescription = taskDescription;
+        } else {
+            throw new IllegalArgumentException("Task description must be 50 characters or less.");
+        }
     }
 }
