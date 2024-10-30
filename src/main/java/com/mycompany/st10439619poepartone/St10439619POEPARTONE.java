@@ -19,7 +19,7 @@ public class St10439619POEPARTONE {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Registration System");
 
-        // Create dialog for JOptionPane
+        
         final JDialog dialog = new JDialog();
         dialog.setAlwaysOnTop(true); 
 
