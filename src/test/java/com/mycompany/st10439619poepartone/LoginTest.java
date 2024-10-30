@@ -86,78 +86,118 @@ public void testRegisterUserFailure() {
      * Test of checkUserName method, of class Login.
      */
     @Test
-    public void testCheckUserName() {
-        System.out.println("checkUserName");
-        String username = "";
-        Login instance = new Login();
-        boolean expResult = false;
-        boolean result = instance.checkUserName(username);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+public void testCheckUserName() {
+    System.out.println("checkUserName");
+    String username = ""; // Test with an empty username
+    Login instance = new Login();
+    boolean expResult = false; // Expecting it to be false for an empty username
+    boolean result = instance.checkUserName(username);
+    assertEquals(expResult, result);
+}
 
     /**
      * Test of checkPasswordComplexity method, of class Login.
      */
     @Test
-    public void testCheckPasswordComplexity() {
-        System.out.println("checkPasswordComplexity");
-        String password = "";
-        Login instance = new Login();
-        boolean expResult = false;
-        boolean result = instance.checkPasswordComplexity(password);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+public void testCheckPasswordComplexity() {
+    System.out.println("checkPasswordComplexity");
+    String password = "Ch&&sec@ke99!"; // Use a complex password for testing
+    Login instance = new Login();
+    boolean expResult = true; // Expect it to return true for a valid password
+    boolean result = instance.checkPasswordComplexity(password);
+    assertEquals(expResult, result);
+
+    password = ""; // Test with an empty password
+    expResult = false; // Expect it to return false for an empty password
+    result = instance.checkPasswordComplexity(password);
+    assertEquals(expResult, result);
+}
 
     /**
      * Test of registerUser method, of class Login.
      */
     @Test
-    public void testRegisterUser() {
-        System.out.println("registerUser");
-        String username = "";
-        String password = "";
-        List<User> userList = null;
-        Login instance = new Login();
-        String expResult = "";
-        String result = instance.registerUser(username, password, userList);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+public void testRegisterUser() {
+    System.out.println("registerUser");
+    
+    String username = ""; // Test with an empty username
+    String password = ""; // Test with an empty password
+    List<User> userList = new ArrayList<>(); // Initialize the user list
+    Login instance = new Login();
+    
+    // Expecting an error message for empty fields
+    String expResult = "Username and password cannot be empty.";
+    String result = instance.registerUser(username, password, userList);
+    assertEquals(expResult, result);
+    
+    // Now test with a valid username but an empty password
+    username = "valid_user";
+    password = ""; // Test with an empty password
+    expResult = "Username and password cannot be empty.";
+    result = instance.registerUser(username, password, userList);
+    assertEquals(expResult, result);
+    
+    // Now test with an empty username but a valid password
+    username = ""; // Test with an empty username
+    password = "Ch&&sec@ke99!";
+    expResult = "Username and password cannot be empty.";
+    result = instance.registerUser(username, password, userList);
+    assertEquals(expResult, result);
+    
+    // Finally, test with a valid username and password
+    username = "new_user"; // Use a valid username
+    password = "Ch&&sec@ke99!"; // Use a valid password
+    expResult = "User registered successfully!";
+    result = instance.registerUser(username, password, userList);
+    assertEquals(expResult, result);
+}
 
     /**
      * Test of loginUser method, of class Login.
      */
     @Test
-    public void testLoginUser() {
-        System.out.println("loginUser");
-        String username = "";
-        String password = "";
-        List<User> userList = null;
-        Login instance = new Login();
-        boolean expResult = false;
-        boolean result = instance.loginUser(username, password, userList);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+public void testLoginUser() {
+    System.out.println("loginUser");
+
+    // Set up test inputs
+    String username = ""; // Test with an empty username
+    String password = ""; // Test with an empty password
+    List<User> userList = new ArrayList<>(); // Initialize with an empty list
+
+    // Create an instance of the Login class
+    Login instance = new Login();
+
+    // Expected result should be false, as login with empty credentials should fail
+    boolean expResult = false;
+
+    // Call the loginUser method
+    boolean result = instance.loginUser(username, password, userList);
+
+    // Assert the result is as expected
+    assertEquals(expResult, result);
+
+    // Optionally, add tests for valid credentials here if needed
+}
+
 
     /**
      * Test of returnLoginStatus method, of class Login.
      */
     @Test
-    public void testReturnLoginStatus() {
-        System.out.println("returnLoginStatus");
-        boolean isLoggedIn = false;
-        Login instance = new Login();
-        String expResult = "";
-        String result = instance.returnLoginStatus(isLoggedIn);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-}   
+public void testReturnLoginStatus() {
+    System.out.println("returnLoginStatus");
+
+    // Test when the user is logged in
+    boolean isLoggedIn = true;
+    Login instance = new Login();
+    String expectedLoggedInResult = "Welcome! It is great to see you."; // Adjusted expected result
+    String resultLoggedIn = instance.returnLoginStatus(isLoggedIn);
+    assertEquals(expectedLoggedInResult, resultLoggedIn);
+    
+    // Test when the user is logged out
+    isLoggedIn = false;
+    String expectedLoggedOutResult = "Logged Out"; // Assuming this is the expected result
+    String resultLoggedOut = instance.returnLoginStatus(isLoggedIn);
+    assertEquals(expectedLoggedOutResult, resultLoggedOut);
+}
+}
