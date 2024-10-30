@@ -21,7 +21,7 @@ public class St10439619POEPARTONE {
 
         // Create dialog for JOptionPane
         final JDialog dialog = new JDialog();
-        dialog.setAlwaysOnTop(true);  // Ensure JOptionPane appears on top
+        dialog.setAlwaysOnTop(true); 
 
         while (true) {
             System.out.println("Please select one of the following options:");
@@ -88,7 +88,7 @@ public class St10439619POEPARTONE {
                                  "3. Quit";
             String optionString = JOptionPane.showInputDialog(dialog, menuMessage);
 
-            if (optionString == null) { // Handle cancel option
+            if (optionString == null) { 
                 System.out.println("Exiting EasyKanban. Goodbye!");
                 System.exit(0);
             }
@@ -115,8 +115,8 @@ public class St10439619POEPARTONE {
     private static void addTasks(Scanner scanner, JDialog dialog) {
         String taskCountString = JOptionPane.showInputDialog(dialog, "How many tasks would you like to add?");
         
-        if (taskCountString == null) { // Handle cancel option
-            return; // Exit the task addition if canceled
+        if (taskCountString == null) { 
+            return; 
         }
 
         int taskCount = Integer.parseInt(taskCountString);
@@ -275,7 +275,6 @@ class Task {
     public Task(String taskName, int taskNumber, String taskDescription, String developerDetails, int taskDuration, String taskStatus) {
         this.taskName = taskName;
         this.taskNumber = taskNumber;
-        // Directly validate and set taskDescription
         setTaskDescription(taskDescription);
         this.developerDetails = developerDetails;
         this.taskDuration = taskDuration;
@@ -290,9 +289,17 @@ class Task {
 
     // Create task ID
     public String createTaskID() {
-        return taskName.substring(0, 2).toUpperCase() + ":" + taskNumber + ":" +
-               developerDetails.substring(developerDetails.length() - 3).toUpperCase();
+    String taskNamePart = taskName.length() >= 2 ? taskName.substring(0, 2).toUpperCase() : taskName.toUpperCase();
+    String developerPart = "UNK"; 
+    
+    String[] developerNameParts = developerDetails.split(" ");
+    if (developerNameParts.length > 1) {
+        String lastName = developerNameParts[developerNameParts.length - 1];
+        developerPart = lastName.length() >= 3 ? lastName.substring(lastName.length() - 3).toUpperCase() : lastName.toUpperCase();
     }
+    
+    return taskNamePart + ":" + taskNumber + ":" + developerPart;
+}
 
     // Print task details
     public String printTaskDetails() {
