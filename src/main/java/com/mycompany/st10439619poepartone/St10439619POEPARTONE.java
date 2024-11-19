@@ -135,13 +135,12 @@ public class St10439619POEPARTONE {
                 }
             }
 
-            String devFirstName = JOptionPane.showInputDialog(dialog, "Assigned Developer's First Name:");
-            String devLastName = JOptionPane.showInputDialog(dialog, "Assigned Developer's Last Name:");
+            String devFirstName = JOptionPane.showInputDialog(dialog, "Developer's First Name:");
+            String devLastName = JOptionPane.showInputDialog(dialog, "Developer's Last Name:");
 
             String taskDurationString = JOptionPane.showInputDialog(dialog, "Estimated Task Duration (in hours):");
             int taskDuration = Integer.parseInt(taskDurationString);
 
-            // Select Task Status
             String statusMessage = "Select Task Status:\n1. To Do\n2. Doing\n3. Done";
             String statusChoiceString = JOptionPane.showInputDialog(dialog, statusMessage);
             int statusChoice = Integer.parseInt(statusChoiceString);
@@ -159,19 +158,17 @@ public class St10439619POEPARTONE {
                 default:
                     taskStatus = "Unknown";
             }
-
-            // Create and store the task
+            
             Task task = new Task(taskName, i, taskDescription, devFirstName + " " + devLastName, taskDuration, taskStatus);
             taskList.add(task);
 
-            // Display task information using JOptionPane with dialog owner
+            
             JOptionPane.showMessageDialog(dialog, task.printTaskDetails());
         }
     }
 
     private static void showReport(JDialog dialog) {
-        // Example report to show all tasks
-        StringBuilder report = new StringBuilder("Current Tasks:\n");
+        StringBuilder report = new StringBuilder("Report\n");
         for (Task task : taskList) {
             report.append(task.printTaskDetails()).append("\n\n");
         }
