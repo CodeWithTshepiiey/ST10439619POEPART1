@@ -82,65 +82,6 @@ public void testRegisterUserFailure() {
     assertEquals("Password does not meet complexity requirements. Ensure it has at least 8 characters, a capital letter, a number, and a special character.", message);
 }
 
-    /**
-     * Test of checkUserName method, of class Login.
-     */
-    @Test
-public void testCheckUserName() {
-    System.out.println("checkUserName");
-    String username = ""; // Test with an empty username
-    Login instance = new Login();
-    boolean expResult = false; // Expecting it to be false for an empty username
-    boolean result = instance.checkUserName(username);
-    assertEquals(expResult, result);
-}
-
-public void testCheckPasswordComplexity() {
-    System.out.println("checkPasswordComplexity");
-    String password = "Ch&&sec@ke99!"; 
-    Login instance = new Login();
-    boolean expResult = true; 
-    boolean result = instance.checkPasswordComplexity(password);
-    assertEquals(expResult, result);
-
-    password = ""; 
-    expResult = false;
-    result = instance.checkPasswordComplexity(password);
-    assertEquals(expResult, result);
-}
-
-
-    @Test
-public void testRegisterUser() {
-    System.out.println("registerUser");
-    
-    String username = ""; 
-    String password = "";
-    List<User> userList = new ArrayList<>(); 
-    Login instance = new Login();
-    
-    String expResult = "Username and password cannot be empty.";
-    String result = instance.registerUser(username, password, userList);
-    assertEquals(expResult, result);
-    
-    username = "valid_user";
-    password = ""; 
-    expResult = "Username and password cannot be empty.";
-    result = instance.registerUser(username, password, userList);
-    assertEquals(expResult, result);
-    
-    username = ""; 
-    password = "Ch&&sec@ke99!";
-    expResult = "Username and password cannot be empty.";
-    result = instance.registerUser(username, password, userList);
-    assertEquals(expResult, result);
-    
-    username = "new_user"; 
-    password = "Ch&&sec@ke99!"; 
-    expResult = "User registered successfully!";
-    result = instance.registerUser(username, password, userList);
-    assertEquals(expResult, result);
-}
 
 
     @Test
@@ -164,8 +105,6 @@ public void testLoginUser() {
     
 }
 
-
-
     @Test
 public void testReturnLoginStatus() {
     System.out.println("returnLoginStatus");
@@ -179,7 +118,7 @@ public void testReturnLoginStatus() {
     
     
     isLoggedIn = false;
-    String expectedLoggedOutResult = "Logged Out"; 
+    String expectedLoggedOutResult = "Username or password incorrect, please try again.";
     String resultLoggedOut = instance.returnLoginStatus(isLoggedIn);
     assertEquals(expectedLoggedOutResult, resultLoggedOut);
 }

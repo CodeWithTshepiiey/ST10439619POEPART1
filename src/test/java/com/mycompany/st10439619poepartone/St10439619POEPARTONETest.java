@@ -59,10 +59,26 @@ public class St10439619POEPARTONETest {
         assertEquals("Task description must be 50 characters or less.", exception.getMessage());
     }
 
+@Test
+public void testAddAndRemoveTasks() {
+    tasks.add(new Task("New Task", 3, "New Description", "New Dev", 4, "To Do"));
+    assertEquals(3, tasks.size(), "After adding a task, the list size should be 3.");
+
+    tasks.remove(0);
+    assertEquals(2, tasks.size(), "After removing a task, the list size should be 2.");
+}
+@Test
+public void testInvalidTaskIDGeneration() {
+    Task invalidTask = new Task("", -1, "Description", "", 5, "Doing");
+    String taskID = invalidTask.createTaskID();
+    assertNotNull(taskID, "Task ID should not be null even for invalid input.");
+    assertEquals("Invalid ID", taskID, "Expected 'Invalid ID' for invalid task input.");
+}
+
     @Test
 public void testTaskIDGeneration() {
     Task task1 = tasks.get(0);
-    assertEquals("LO:1:SON", task1.createTaskID(), "Task ID should be LO:1:SON");
+    assertEquals("LO:1:SON", task1.createTaskID(), "Expected Task ID LO:1:SON but got a different value for the first task.");
 
     String[][] testData = {
         {"Add Task", "Developer Smith", "AD:0:ITH"},
@@ -79,21 +95,29 @@ public void testTaskIDGeneration() {
         Task task = new Task(taskName, i, "Description", developer, 5, "Doing");
         assertEquals(expectedID, task.createTaskID(), "Task ID for Task " + i + " does not match expected format.");
     }
+    Task invalidTask1 = new Task(null, 1, "Description", "Developer Smith", 5, "To Do");
+    assertEquals("Invalid ID", invalidTask1.createTaskID(), "Expected 'Invalid ID' for null task name.");
+
+    Task invalidTask2 = new Task("Task", -1, "Description", "Developer Smith", 5, "To Do");
+    assertEquals("Invalid ID", invalidTask2.createTaskID(), "Expected 'Invalid ID' for negative task number.");
+
+    Task invalidTask3 = new Task("Task", 1, "Description", null, 5, "To Do");
+    assertEquals("Invalid ID", invalidTask3.createTaskID(), "Expected 'Invalid ID' for null developer details.");
 }
 
-    @Test
-    public void testTotalHoursAccumulation() {
-        int totalHoursForTwoTasks = Task.returnTotalHours(tasks);
-        assertEquals(18, totalHoursForTwoTasks, "Total hours for Task1 and Task2 should be 18");
+@Test
+public void testTotalHoursAccumulation() {
+    assertEquals(18, Task.returnTotalHours(tasks), 
+        "Total hours for the default tasks list should be 18.");
 
-        List<Task> fiveTasks = new ArrayList<>();
-        fiveTasks.add(new Task("Task1", 1, "Description", "Developer1", 10, "To Do"));
-        fiveTasks.add(new Task("Task2", 2, "Description", "Developer2", 12, "Doing"));
-        fiveTasks.add(new Task("Task3", 3, "Description", "Developer3", 55, "Done"));
-        fiveTasks.add(new Task("Task4", 4, "Description", "Developer4", 11, "To Do"));
-        fiveTasks.add(new Task("Task5", 5, "Description", "Developer5", 1, "Doing"));
+    List<Task> largeTaskList = List.of(
+        new Task("Task1", 1, "Description", "Dev1", 10, "To Do"),
+        new Task("Task2", 2, "Description", "Dev2", 12, "Doing"),
+        new Task("Task3", 3, "Description", "Dev3", 55, "Done"),
+        new Task("Task4", 4, "Description", "Dev4", 11, "To Do"),
+        new Task("Task5", 5, "Description", "Dev5", 1, "Doing")
+    );
 
-        int totalHoursForFiveTasks = Task.returnTotalHours(fiveTasks);
-        assertEquals(89, totalHoursForFiveTasks, "Total hours for five tasks should be 89");
-    }
+    assertEquals(89, Task.returnTotalHours(largeTaskList), "Total hours for the large task list should be 89.");
+}
 }

@@ -267,6 +267,11 @@ class Task {
     private int taskDuration;
     private String taskID;
     private String taskStatus;
+    public static List<String> developers = new ArrayList<>();
+    public static List<String> taskNames = new ArrayList<>();
+    public static List<String> taskIDs = new ArrayList<>();
+    public static List<Integer> taskDurations = new ArrayList<>();
+    public static List<String> taskStatuses = new ArrayList<>();
 
     // Constructor
     public Task(String taskName, int taskNumber, String taskDescription, String developerDetails, int taskDuration, String taskStatus) {
@@ -278,6 +283,13 @@ class Task {
         this.taskID = createTaskID();
         this.taskStatus = taskStatus;
     }
+    public static void addTasksToArray(Task task) {
+        developers.add(task.getDeveloperDetails());
+        taskNames.add(task.getTaskName());
+        taskIDs.add(task.createTaskID());
+        taskDurations.add(task.getTaskDuration());
+        taskStatuses.add(task.getTaskStatus());
+    }
 
     // Check task description
     public boolean checkTaskDescription() {
@@ -286,8 +298,11 @@ class Task {
 
     // Create task ID
     public String createTaskID() {
+       if (taskName == null || taskName.isEmpty() || developerDetails == null || developerDetails.isEmpty() || taskNumber < 0) {
+        return "Invalid ID";
+    } 
     String taskNamePart = taskName.length() >= 2 ? taskName.substring(0, 2).toUpperCase() : taskName.toUpperCase();
-    String developerPart = "UNK"; 
+    String developerPart = "Invalid ID"; 
     
     String[] developerNameParts = developerDetails.split(" ");
     if (developerNameParts.length > 1) {
@@ -316,6 +331,21 @@ class Task {
             totalHours += task.taskDuration;
         }
         return totalHours;
+    }
+     public String getDeveloperDetails() {
+        return developerDetails;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public int getTaskDuration() {
+        return taskDuration;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
     }
 
     // Setter for taskDescription with validation
