@@ -122,4 +122,51 @@ public void testReturnLoginStatus() {
     String resultLoggedOut = instance.returnLoginStatus(isLoggedIn);
     assertEquals(expectedLoggedOutResult, resultLoggedOut);
 }
+
+    /**
+     * Test of checkUserName method, of class Login.
+     */
+    @Test
+    public void testCheckUserName() {
+        System.out.println("checkUserName");
+        String username = "";
+        Login instance = new Login();
+        boolean expResult = false;
+        boolean result = instance.checkUserName(username);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of checkPasswordComplexity method, of class Login.
+     */
+    @Test
+    public void testCheckPasswordComplexity() {
+        System.out.println("checkPasswordComplexity");
+        String password = "";
+        Login instance = new Login();
+        boolean expResult = false;
+        boolean result = instance.checkPasswordComplexity(password);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of registerUser method, of class Login.
+     */
+    @Test
+    public void testRegisterUser() {
+        System.out.println("registerUser");
+        String username = "";
+        String password = "";
+        List<User> userList = null;
+        Login instance = new Login();
+        String expResult = "";
+        String result = instance.registerUser(username, password, userList);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 }

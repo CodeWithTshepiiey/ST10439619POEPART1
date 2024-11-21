@@ -467,19 +467,27 @@ class Task {
 
     // Create task ID
     public String createTaskID() {
-       if (taskName == null || taskName.isEmpty() || developerDetails == null || developerDetails.isEmpty() || taskNumber < 0) {
+    if (taskName == null || taskNumber < 0 || developerDetails == null || developerDetails.isEmpty()) {
         return "Invalid ID";
-    } 
-    String taskNamePart = taskName.length() >= 2 ? taskName.substring(0, 2).toUpperCase() : taskName.toUpperCase();
-    String developerPart = "Invalid ID"; 
-    
-    String[] developerNameParts = developerDetails.split(" ");
-    if (developerNameParts.length > 1) {
-        String lastName = developerNameParts[developerNameParts.length - 1];
-        developerPart = lastName.length() >= 3 ? lastName.substring(lastName.length() - 3).toUpperCase() : lastName.toUpperCase();
+    }
+
+    // Split developer name and get the last name
+    String[] nameParts = developerDetails.split(" ");
+    if (nameParts.length == 0) {
+        return "Invalid ID"; // in case no name is provided
     }
     
-    return taskNamePart + ":" + taskNumber + ":" + developerPart;
+    String lastName = nameParts[nameParts.length - 1].toUpperCase(); // Get last name and convert to uppercase
+
+    // Ensure the last name is at least 3 characters long, or truncate it
+    if (lastName.length() < 3) {
+        lastName = String.format("%-3s", lastName).toUpperCase(); // Pad with spaces if less than 3 chars
+    } else {
+        lastName = lastName.substring(0, 3); // Get first 3 characters
+    }
+
+    String taskID = taskName.substring(0, 2).toUpperCase() + ":" + taskNumber + ":" + lastName;
+    return taskID;
 }
 
     // Print task details
@@ -502,19 +510,19 @@ class Task {
         return totalHours;
     }
      public String getDeveloperDetails() {
-        return developerDetails;
+        return this.developerDetails;
     }
 
     public String getTaskName() {
-        return taskName;
+        return this.taskName;
     }
 
     public int getTaskDuration() {
-        return taskDuration;
+        return this.taskDuration;
     }
 
     public String getTaskStatus() {
-        return taskStatus;
+        return this.taskStatus;
     }
 
     // Setter for taskDescription with validation
