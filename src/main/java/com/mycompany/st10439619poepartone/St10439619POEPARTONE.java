@@ -85,7 +85,12 @@ public class St10439619POEPARTONE {
             String menuMessage = "Please select an option:\n" +
                                  "1. Add tasks\n" +
                                  "2. Show report\n" +
-                                 "3. Quit";
+                                 "3. Display 'Done' tasks\n" +
+                                 "4. Display task with the longest duration\n" +
+                                 "5. Search for a task by name\n" +
+                                 "6. Search tasks by developer\n" +
+                                 "7. Delete a task by name\n" +
+                                 "8. Quit";
             String optionString = JOptionPane.showInputDialog(dialog, menuMessage);
 
             if (optionString == null) { 
@@ -103,6 +108,85 @@ public class St10439619POEPARTONE {
                     showReport(dialog);
                     break;
                 case 3:
+                    StringBuilder doneTasks = new StringBuilder("Tasks with status 'Done':\n");
+                    boolean found = false;
+                    for (Task task : taskList) {
+                        if (task.getTaskStatus().equalsIgnoreCase("Done")) {
+                            doneTasks.append(task.printTaskDetails()).append("\n\n");
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        doneTasks.append("No tasks with status 'Done'.");
+                    }
+                    JOptionPane.showMessageDialog(dialog, doneTasks.toString());
+                    break;
+                case 4:
+                    if (taskList.isEmpty()) {
+                        JOptionPane.showMessageDialog(dialog, "No tasks available.");
+                    } else {
+                        int maxDuration = 0;
+                        Task longestTask = null;
+                        for (Task task : taskList) {
+                            if (task.getTaskDuration() > maxDuration) {
+                                maxDuration = task.getTaskDuration();
+                                longestTask = task;
+                            }
+                        }
+                        JOptionPane.showMessageDialog(dialog, "Task with the longest duration:\n" + longestTask.printTaskDetails());
+                    }
+                    break;
+                case 5:
+                    String searchName = JOptionPane.showInputDialog(dialog, "Enter task name to search for:");
+                    if (searchName != null) {
+                        boolean taskFound = false;
+                        for (Task task : taskList) {
+                            if (task.getTaskName().equalsIgnoreCase(searchName)) {
+                                JOptionPane.showMessageDialog(dialog, "Task found:\n" + task.printTaskDetails());
+                                taskFound = true;
+                                break;
+                            }
+                        }
+                        if (!taskFound) {
+                            JOptionPane.showMessageDialog(dialog, "Task with name '" + searchName + "' not found.");
+                        }
+                    }
+                    break;
+                case 6:
+                    String developerName = JOptionPane.showInputDialog(dialog, "Enter developer name to search for tasks:");
+                    if (developerName != null) {
+                        StringBuilder developerTasks = new StringBuilder("Tasks assigned to " + developerName + ":\n");
+                        boolean foundDev = false;
+                        for (Task task : taskList) {
+                            if (task.getDeveloperDetails().equalsIgnoreCase(developerName)) {
+                                developerTasks.append(task.printTaskDetails()).append("\n\n");
+                                foundDev = true;
+                            }
+                        }
+                        if (!foundDev) {
+                            developerTasks.append("No tasks assigned to " + developerName + ".");
+                        }
+                        JOptionPane.showMessageDialog(dialog, developerTasks.toString());
+                    }
+                    break;
+                case 7:
+                    String deleteTaskName = JOptionPane.showInputDialog(dialog, "Enter task name to delete:");
+                    if (deleteTaskName != null) {
+                        boolean taskDeleted = false;
+                        for (int i = 0; i < taskList.size(); i++) {
+                            if (taskList.get(i).getTaskName().equalsIgnoreCase(deleteTaskName)) {
+                                taskList.remove(i);
+                                JOptionPane.showMessageDialog(dialog, "Task '" + deleteTaskName + "' has been deleted.");
+                                taskDeleted = true;
+                                break;
+                            }
+                        }
+                        if (!taskDeleted) {
+                            JOptionPane.showMessageDialog(dialog, "Task with name '" + deleteTaskName + "' not found.");
+                        }
+                    }
+                    break;
+                    case 8:
                     quit = true;
                     System.out.println("Exiting EasyKanban. Goodbye!");
                     break;
@@ -173,6 +257,23 @@ public class St10439619POEPARTONE {
             report.append(task.printTaskDetails()).append("\n\n");
         }
         JOptionPane.showMessageDialog(dialog, report.toString());
+    }
+    private static void searchTaskByTaskName(Scanner scanner) {
+        System.out.println("Enter the task name to search for:");
+        String searchName = scanner.nextLine();
+        Task.searchTaskByTaskName(taskList, searchName);
+    }
+
+    private static void searchTasksByDeveloper(Scanner scanner) {
+        System.out.println("Enter the developer name to search for tasks:");
+        String developerName = scanner.nextLine();
+        Task.searchTasksByDeveloper(taskList, developerName);
+    }
+
+    private static void deleteTaskByName(Scanner scanner) {
+        System.out.println("Enter the task name to delete:");
+        String deleteTaskName = scanner.nextLine();
+        Task.deleteTaskByName(taskList, deleteTaskName);
     }
 }
 
@@ -290,6 +391,74 @@ class Task {
         taskDurations.add(task.getTaskDuration());
         taskStatuses.add(task.getTaskStatus());
     }
+    public static void showDoneTasks(List<Task> taskList) {
+    System.out.println("Tasks with status 'Done':");
+    boolean found = false;
+    for (Task task : taskList) {
+        if (task.getTaskStatus().equalsIgnoreCase("Done")) {
+            System.out.println(task.printTaskDetails());
+            found = true;
+        }
+    }
+    if (!found) {
+        System.out.println("No tasks with status 'Done'.");
+    }
+}
+    public static void showTaskWithLongestDuration() {
+    if (taskDurations.isEmpty()) {
+        System.out.println("No tasks available.");
+        return;
+    }
+
+    int maxDuration = 0;
+    int index = 0;
+
+    for (int i = 0; i < taskDurations.size(); i++) {
+        if (taskDurations.get(i) > maxDuration) {
+            maxDuration = taskDurations.get(i);
+            index = i;
+        }
+    }
+    
+
+    System.out.println("Task with the longest duration:");
+    System.out.println("Developer: " + developers.get(index));
+    System.out.println("Duration: " + maxDuration + " hours");
+}
+    public static void searchTaskByTaskName(List<Task> taskList, String searchName) {
+    for (Task task : taskList) {
+        if (task.getTaskName().equalsIgnoreCase(searchName)) {
+            System.out.println("Task found:");
+            System.out.println(task.printTaskDetails());
+            return;
+        }
+    }
+    System.out.println("Task with name '" + searchName + "' not found.");
+}
+    public static void searchTasksByDeveloper(List<Task> taskList, String developerName) {
+    System.out.println("Tasks assigned to " + developerName + ":");
+    boolean found = false;
+    for (Task task : taskList) {
+        if (task.getDeveloperDetails().equalsIgnoreCase(developerName)) {
+            System.out.println(task.printTaskDetails());
+            found = true;
+        }
+    }
+    if (!found) {
+        System.out.println("No tasks assigned to " + developerName + ".");
+    }
+}
+    public static void deleteTaskByName(List<Task> taskList, String deleteTaskName) {
+    for (int i = 0; i < taskList.size(); i++) {
+        if (taskList.get(i).getTaskName().equalsIgnoreCase(deleteTaskName)) {
+            taskList.remove(i);
+            System.out.println("Task '" + deleteTaskName + "' has been deleted.");
+            return;
+        }
+    }
+    System.out.println("Task with name '" + deleteTaskName + "' not found.");
+}
+    
 
     // Check task description
     public boolean checkTaskDescription() {
